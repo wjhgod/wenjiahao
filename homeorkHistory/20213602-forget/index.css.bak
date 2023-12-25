@@ -1,0 +1,44 @@
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            text-align: center;
+        }
+
+        input {
+            font-size: 1.5em;
+            margin-left: 1em;
+        }
+		input#switch{
+		 background-color:rgb(30,60,0) ;
+		 color:rgb(100,200,50);
+		}
+
+        #big {
+            width: auto;
+            height: inherit;
+        }
+
+        #logo {
+            padding: 10px 5px;
+            
+            background-color: green;
+            color: aliceblue;
+            font-size: 1.5em;
+            position: absolute;
+            top: 0;
+            right: 0;
+        }
+		 #videoTime {
+            padding: 10px 5px;
+            
+            background-color: red;
+            color: aliceblue;
+            font-size: 1.5em;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+   

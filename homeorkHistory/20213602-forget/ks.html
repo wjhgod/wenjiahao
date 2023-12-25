@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            text-align: center;
+        }
+
+        input {
+            font-size: 1.5em;
+            margin-left: 1em;
+            cursor: pointer;
+        }
+
+        input#switch {
+            background-color: rgb(30, 60, 0);
+            color: rgb(100, 200, 50);
+        }
+
+        #currentTime {
+            padding: 10px 5px;
+            background-color: red;
+            color: aliceblue;
+            font-size: 2em;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        #logo {
+            padding: 10px 5px;
+            background-color: green;
+            color: aliceblue;
+            font-size: 2em;
+            position: absolute;
+            top: 0;
+            right: 0;
+        }
+    </style>
+    <script src="ks.js">
+    </script>
+</head>
+
+<body>
+    <div id="currentTime"></div>
+    <div id="logo"></div>
+    <div id="stage">
+        <video id="video"></video>
+        <audio id="audio"></audio>
+    </div>
+    <div id="UI">
+        <input type="button" value="pre" id="pre">
+        <input type="button" value="play" id="play">
+        <input type="button" value="stop" id="stop">
+        <input type="button" value="next" id="next">
+        <input type="button" value="切换媒体" id="switch">
+    </div>
+</body>
+
+<script>
+    //定义全局变量
+    var Model = {};
+    Model.i = 0;
+    Model.isVideo = true;
+    Model.videoLength = mediaData.videoFiles.length;
+    Model.audioLength = mediaData.audioFiles.length;
+    Model.getVideoURL = function () {
+        return mediaData.videoPath + mediaData.videoFiles[Model.i];
+    }
+    Model.getAudioURL = function () {
+        return mediaData.audioPath + mediaData.audioFiles[Model.i];
+    }
+    Model.UI = {};
+    Model.UI.stageDom = document.getElementById("stage");
+    Model.UI.videoDom = document.getElementById("video");
+    Model.UI.audioDom = document.getElementById("audio");
+    Model.UI.preDom = document.getElementById("pre");
+    Model.UI.playDom = document.getElementById("play");
+    Model.UI.stopDom = document.getElementById("stop");
+    Model.UI.nextDom = document.getElementById("next");
+    Model.UI.logoDom = document.getElementById("logo");
+    Model.UI.timeDom = document.getElementById("currentTime");
+    Model.UI.switchDom = document.getElementById("switch");
+
+    Model.UI.videoDom.src = Model.getVideoURL(Model.i);
+    Model.UI.audioDom.src = Model.getAudioURL(Model.i);
+    // 第七次作业更新任务1— — — —全屏播放视频
+    // 1.1定义windowsWidth,将文档浏览器的宽度赋值给它
+    Model.windowsWidth = document.body.clientWidth;
+    // 1.2再将windowsWidth赋值给视频的宽度，达成全屏播放视频的效果
+    Model.UI.stageDom.style.width = Model.windowsWidth + 'px';
+    Model.UI.videoDom.style.width = Model.windowsWidth + 'px';
+    Model.UI.stageDom.style.height = Model.UI.videoDom.clientHeight + 150 + 'px';
+
+    // 第七次作业更新任务2— — — —logo设置
+    // 2.2logo内容填充
+    Model.showCurrentVideoUI = function (i) {
+        Model.UI.logoDom.textContent = "NO." + (i + 1) + "/" + Model.videoLength;
+    }
+
+    Model.showTimeUI = function () {
+        let content;
+        if (Model.isVideo) {
+            content = parseInt(Model.UI.videoDom.currentTime) + " s" + "/" + parseInt(Model.UI.videoDom.duration) + " s";
+        } else {
+            content = parseInt(Model.UI.audioDom.currentTime) + " s" + "/" + parseInt(Model.UI.audioDom.duration) + " s";
+        }
+
+        Model.UI.timeDom.textContent = content;
+
+    };
+
+    // 2.3初始化 i=0
+    Model.showCurrentVideoUI(0);
+    // 第七次作业更新任务3— — — —实时视频时间
+    // 第八次作业更新任务1.— — — —将实时播放视频时间放入div中
+    window.setInterval(function () {
+        Model.showTimeUI();
+    }, 1000);
+    //定义向前按钮
+    Model.UI.preDom.onclick = function () {
+        let i = Model.i;
+        if (i == 0) {
+            i = Model.videoLength - 1;
+        }
+        else {
+            i--;
+        }
+        // 2.4 — — — —每次切换视频需要更新logo内容
+        Model.showCurrentVideoUI(i);
+        Model.i = i;
+        Model.UI.videoDom.src = Model.getVideoURL();
+        Model.UI.videoDom.play();
+    }
+    //定义播放按钮
+    Model.UI.playDom.onclick = function () {
+        if (Model.isVideo) {
+            Model.UI.videoDom.play();
+        } else {
+            Model.UI.audioDom.play();
+        }
+
+    };
+    //定义暂停按钮
+    Model.UI.stopDom.onclick = function () {
+
+        if (Model.isVideo) {
+            Model.UI.videoDom.pause();
+        } else {
+            Model.UI.audioDom.pause();
+        }
+    }
+    //定义向后按钮
+    Model.UI.nextDom.onclick = function () {
+        let i = Model.i;
+        if (Model.isVideo) {
+            if (i == Model.videoLength - 1) {
+                i = 0;
+            }
+            else {
+                i++;
+            }
+            // 2.4 — — — —每次切换视频需要更新logo内容
+            Model.showCurrentVideoUI(i);
+            Model.i = i;
+            Model.UI.videoDom.src = Model.getVideoURL();
+            Model.UI.videoDom.play();
+        }//isVideo 
+        else { //isAudio
+
+            if (i == Model.audioLength - 1) {
+                i = 0;
+            }
+            else {
+                i++;
+            }
+            // 2.4 — — — —每次切换视频需要更新logo内容
+            Model.showCurrentVideoUI(i);
+            Model.i = i;
+            Model.UI.audioDom.src = Model.getAudioURL();
+            Model.UI.audioDom.play();
+
+        }
+    };
+    // 关闭视频
+    Model.shutDownVideo = function () {
+        //Model.UI.videoDom.style.display = "none";
+        Model.UI.stageDom.removeChild(Model.UI.videoDom);
+    }
+    //打开视频
+    Model.turnOnVideo = function () {
+        //Model.UI.videoDom.style.display = "";
+        Model.UI.stageDom.appendChild(Model.UI.videoDom);
+    }
+    Model.UI.switchDom.onclick = function () {
+
+        if (Model.isVideo) {
+            Model.UI.switchDom.value = "ToAudio";
+            Model.shutDownVideo();
+        }
+        else {
+            Model.UI.switchDom.value = "Tovideo";
+            Model.turnOnVideo();
+        }
+        Model.isVideo = !Model.isVideo;
+    };
+</script>
+
+</html>

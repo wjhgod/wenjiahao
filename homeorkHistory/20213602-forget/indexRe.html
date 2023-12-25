@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="vue.js"></script>
+
+    <link rel="stylesheet" href="index.css">
+</head>
+<body>
+    <div id="app">
+        <div id="currentTime"></div>
+        <div id="logo"></div>
+        <div id="media">
+            <video src="D:\media\mp4Files\v02004040000bpa9p3egncoejcefuv4g" id="video"></video>
+            <audio src="D:\media\mp3Files\cs1.mp3" id="audio"></audio>
+        </div>
+        <div>
+            <input type="button" value="pre" class="in" id="pre" >
+            <input type="button" value="play" class="in" id="play" >
+            <input type="button" value="stop" class="in" id="stop">
+            <input type="button" value="next" class="in" id="next" >
+            页面：
+            <input type="text" value=" " class="in" id="nszhuan" v-model="num">
+            <span v-if="num < 1">输入框内不能小于1</span>
+            <span v-else-if="num > 118">输入框内不能大于118</span>
+            <input type="button" value="转跳" class="in" id="zhuan" >
+            <input type="button" value="切换媒体" class="in" id="switch">
+        </div>
+    </div>
+    <script src="mediaData.js"></script>
+    <script src="index.js"></script>
+</body>
+</html>

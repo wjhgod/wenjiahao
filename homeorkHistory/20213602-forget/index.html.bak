@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+ <head>
+  <meta charset="UTF-8">
+
+  <title>Document</title>
+  <link rel="stylesheet" type="text/css" href="index.css">
+  <script src="index.js">
+
+	</script>
+ </head>
+<body>
+    <!-- 2.1宏观标签logo设置，显示该视频是第几个视频 -->
+    <div id="logo"></div>
+	<div id="videoTime" >
+	
+	</div>
+    <div id="stage">
+     <video id="video"></video>
+	 <audio id="audio"></audio>
+	</div>
+    <div id="UI">
+        <input type="button" value="PRE" id="pre">
+        <input type="button" value="PLAY" id="play">
+        <input type="button" value="STOP" id="stop">
+        <input type="button" value="NEXT" id="next">
+        <input type="button" value="切换媒体" id="switch">
+    </div>
+
+
+</body>
+</html>

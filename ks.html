@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KS</title>
+    <link rel="stylesheet" href="index.css">
+    <script src="ks.js">
+    </script>
+</head>
+
+<body>
+    <div id="header">
+        <h1>视频音频播放系统</h1>
+    </div>
+
+    <div id="stage">
+        <div id="currentTime"></div>
+        <div id="logo"></div>
+        <video id="video"></video>
+        <audio id="audio"></audio>
+    </div>
+
+    <div id="UI">
+        <input type="button" value="pre" id="pre">
+        <input type="button" value="play" id="play">
+        <input type="button" value="stop" id="stop">
+        <input type="button" value="next" id="next">
+        <input type="button" value="切换媒体" id="switch">
+    </div>
+</body>
+
+<script>
+    //开启同步代码
+    /*****定义全局变量*****/
+    var Model = {};
+    Model.i = 0;
+    Model.isVideo = true;
+
+    Model.UI = {};
+    Model.UI.stageDom = document.getElementById("stage");
+    Model.UI.headerDom = document.getElementById("header");
+    Model.UI.audioStageDom = document.getElementById("audioStage");
+    Model.UI.videoDom = document.getElementById("video");
+    Model.UI.audioDom = document.getElementById("audio");
+    Model.UI.preDom = document.getElementById("pre");
+    Model.UI.playDom = document.getElementById("play");
+    Model.UI.stopDom = document.getElementById("stop");
+    Model.UI.nextDom = document.getElementById("next");
+    Model.UI.logoDom = document.getElementById("logo");
+    Model.UI.timeDom = document.getElementById("currentTime");
+    Model.UI.switchDom = document.getElementById("switch");
+
+    Model.UI.videoDom.videoLength = mediaData.videoFiles.length;
+    Model.UI.audioDom.audioLength = mediaData.audioFiles.length;
+
+    Model.UI.videoDom.getURL = function () {
+        return mediaData.videoPath + mediaData.videoFiles[Model.i];
+    }
+    Model.UI.audioDom.getURL = function () {
+        return mediaData.audioPath + mediaData.audioFiles[Model.i].fileName;
+    }
+    /*****定义全局变量*****/
+
+    // 全屏播放视频
+    // 1.1定义windowsWidth,将文档浏览器的宽度赋值给它
+    Model.windowsWidth = document.body.clientWidth - 15;
+    // Model.windowsWidth = window.innerWidth;
+    // Model.windowsWidth = document.documentElement.clientWidth;
+    // 1.2再将windowsWidth赋值给视频的宽度，达成全屏播放视频的效果
+    Model.UI.stageDom.style.width = Model.windowsWidth + 'px';
+    Model.UI.videoDom.style.width = Model.windowsWidth + 'px';
+    Model.UI.audioDom.style.width = Model.windowsWidth + 'px';
+    // Model.UI.stageDom.style.height = Model.UI.videoDom.clientHeight + + Model.UI.headerDom.clientHeight + 'px';
+
+    // logo设置
+    // 1.修改logo内容
+    Model.showMediaNum = function (i) {
+        let length = null;
+        if (Model.isVideo) {
+            length = Model.UI.videoDom.videoLength;
+        } else {
+            length = Model.UI.audioDom.audioLength;
+        }
+        Model.UI.logoDom.textContent = "NO." + (i + 1) + "/" + length;
+    }
+    // 2.初始化 Model.i=0
+    Model.showMediaNum(0);
+
+    // 展示时间进度条
+    Model.showTimeUI = function () {
+        let content;
+        if (Model.isVideo) {
+            content = parseInt(Model.UI.videoDom.currentTime) + " s" + "/" + parseInt(Model.UI.videoDom.duration) + " s";
+        } else {
+            content = parseInt(Model.UI.audioDom.currentTime) + " s" + "/" + parseInt(Model.UI.audioDom.duration) + " s";
+        }
+        Model.UI.timeDom.textContent = content;
+    };
+    // 切换媒体类型的函数
+    Model.switchMediaDom = function () {
+        if (Model.isVideo) {
+            // Model.UI.stageDom.style.height = Model.UI.audioDom.clientHeight + 'px';
+            Model.UI.stageDom.removeChild(Model.UI.videoDom);
+            Model.UI.stageDom.appendChild(Model.UI.audioDom);
+        } else {
+            Model.UI.stageDom.removeChild(Model.UI.audioDom);
+            Model.UI.stageDom.appendChild(Model.UI.videoDom);
+        }
+    };
+    // 动态创建音频菜单
+    Model.createAudioMenu = function () {
+        // 动态创建header
+        for (let i = 0; i < 5; i++) {
+            let divD1 = document.createElement("div");
+            let imgD = document.createElement("img");
+            let spanD = document.createElement("span");
+            divD1.className = "person";
+            imgD.className = "img";
+            imgD.src = mediaData.authors.picUrl[i];
+            spanD.textContent = mediaData.authors.names[i];
+            divD1.appendChild(imgD);
+            divD1.appendChild(spanD);
+            document.getElementById("header").appendChild(divD1);
+        }
+        // 动态创建目录
+        let divD2 = document.createElement("div");
+        divD2.id = "audioStage";
+        for (let i = 0; i < 6; i++) {
+            divD2.innerHTML += '<p onclick="playMedia(' + mediaData.audioFiles[0].time[i][0] + ',' + mediaData.audioFiles[0].time[i][1] + ')">' + mediaData.audioFiles[0].titles[i] + '</p>';
+        }
+        Model.UI.stageDom.appendChild(divD2);
+        // 动态创建footer
+        // 学校、班级、小组成员（排序很重要）的名字。
+        let footerD = document.createElement("footer");
+        footerD.textContent = "小组成员:牛河青，温嘉豪，黄金林，周龙卿";
+        footerD.id = "footer";
+        document.body.appendChild(footerD);
+    };
+
+    /*****音频时间开始和结束函数*****/
+    Model.UI.audioDom.addEventListener("timeupdate", timeupdate);
+    var _endTime;
+
+    //视频播放 
+    function playMedia(startTime, endTime) {
+        //设置结束时间 
+        _endTime = endTime;
+        Model.UI.audioDom.currentTime = startTime;
+        Model.UI.audioDom.play();
+    }
+
+    function timeupdate() {
+        //因为当前的格式是带毫秒的float类型的如：12.231233，所以把他转成String了便于后面分割取秒 
+        var time = Model.UI.audioDom.currentTime + "";
+        var ts = time.substring(0, time.indexOf("."));
+        if (ts == _endTime) {
+            Model.UI.audioDom.pause();
+        }
+    }
+    /*****音频时间开始和结束函数*****/
+
+    // 删除音频菜单
+    Model.removeAudioMenu = function () {
+        let headPersonD;
+        let audioStageD;
+        let footerD;
+        headPersonD = document.querySelectorAll("#header .person");
+        audioStageD = document.querySelector("#audioStage");
+        footerD = document.querySelector("#footer");
+        for (var i = 0; i < headPersonD.length; i++) {
+            headPersonD[i].remove();
+        }
+        audioStageD.remove();
+        footerD.remove();
+    };
+
+    //同步代码结束
+
+    // Model.init 开始
+    Model.init = function () {
+        Model.UI.videoDom.src = Model.UI.videoDom.getURL(0);
+        Model.UI.audioDom.src = Model.UI.audioDom.getURL(0);
+
+        // 实时播放视频时间
+        window.setInterval(function () {
+            Model.showTimeUI();
+        }, 1000);
+        // 定义向前按钮
+        Model.UI.preDom.onclick = function () {
+            // 定义局部变量
+            let i = Model.i;
+            let length = null;
+            let file = null;
+            // 判断是视频文件还是音频文件
+            if (Model.isVideo) {
+                length = Model.UI.videoDom.videoLength;
+                file = Model.UI.videoDom;
+            }
+            else {
+                length = Model.UI.audioDom.audioLength;
+                file = Model.UI.audioDom;
+            }
+            // 业务处理
+            if (i == 0) {
+                i = length - 1;
+            }
+            else {
+                i--;
+            }
+            // 判断如果不是第一个音频文件则删除，是则添加
+            headPersonD = document.querySelectorAll("#header .person");
+            audioStageD = document.querySelector("#audioStage");
+            footerD = document.querySelector("#footer");
+            if (!Model.isVideo) {
+                if (i == 0)
+                    Model.createAudioMenu();
+                else if (i != 0 && headPersonD != null && audioStageD != null && footerD != null)
+                    Model.removeAudioMenu();
+            }
+            // 2.4 — — — —每次切换视频需要更新目录内容
+            Model.showMediaNum(i);
+            Model.i = i;
+            file.src = file.getURL();
+            file.play();
+        }
+        // 定义播放按钮
+        Model.UI.playDom.onclick = function () {
+            if (Model.isVideo) {
+                Model.UI.videoDom.play();
+            } else {
+                Model.UI.audioDom.play();
+            }
+        };
+        // 定义暂停按钮
+        Model.UI.stopDom.onclick = function () {
+            if (Model.isVideo) {
+                Model.UI.videoDom.pause();
+            } else {
+                Model.UI.audioDom.pause();
+            }
+        }
+        // 定义向后按钮
+        Model.UI.nextDom.onclick = function () {
+            // 定义局部变量
+            let i = Model.i;
+            let length = null;
+            let file = null;
+            // 判断是视频文件还是音频文件
+            if (Model.isVideo) {
+                length = Model.UI.videoDom.videoLength;
+                file = Model.UI.videoDom;
+            }
+            else {
+                length = Model.UI.audioDom.audioLength;
+                file = Model.UI.audioDom;
+            }
+            // 业务处理
+            if (i == length - 1) {
+                i = 0;
+            }
+            else {
+                i++;
+            }
+            // 判断如果不是第一个音频文件则删除，是则添加 
+            headPersonD = document.querySelectorAll("#header .person");
+            audioStageD = document.querySelector("#audioStage");
+            footerD = document.querySelector("#footer");
+            if (!Model.isVideo) {
+                if (i == 0) {
+                    Model.createAudioMenu();
+                }
+                else if (i != 0 && headPersonD != null && audioStageD != null && footerD != null) {
+                    Model.removeAudioMenu();
+                }
+            }
+            // 每次切换视频需要更新目录内容
+            Model.showMediaNum(i);
+            Model.i = i;
+            file.src = file.getURL();
+            file.play();
+        };
+        // 切换媒体
+        Model.UI.switchDom.onclick = function () {
+            Model.switchMediaDom();
+            if (Model.isVideo) {
+                Model.UI.switchDom.value = "Audio";
+                Model.createAudioMenu();
+            }
+            else {
+                Model.UI.switchDom.value = "Video";
+                Model.removeAudioMenu();
+            }
+            Model.isVideo = !Model.isVideo;
+            Model.i = 0;
+            Model.showMediaNum(Model.i);
+        };
+    };
+    // Model.init 结束
+    Model.init();
+</script>
+
+</html>

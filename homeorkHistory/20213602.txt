@@ -1,0 +1,85 @@
+    1  pwd
+    2  cd /
+    3  ls
+    4  mkdir zhongwy
+    5  cd zhongwy
+    6  ls
+    7  cp -r /C;/用户/19228/ .
+    8  ls
+    9  cp -r/D/web/*
+   10  cp -r/D/web/* .
+   11  cp /D/web/* /.
+   12  cp -r/D/web/* /.
+   13  cp -r/D/web/* /zhongwy
+   14  cp -r/D:/web/* /.
+   15  cp-r/D:/web/* .
+   16  ls
+   17  cp -r/D:/web/OIP-C /.
+   18  cp -r D:/web/OIP-C /'
+   19  ls
+   20  cd zhongwy
+   21  pwd
+   22  ls
+   23  mkdir zwy
+   24  cd zwy
+   25  ls
+   26  cp -r D:/web/OIP-C.jpg/zwy
+   27  cp -r D:/web/zz/* /./
+   28  ls
+   29  cp -r D:/web/zz/* .
+   30  ls
+   31  history 
+   32  history >>20213600-0906.txt
+   33  cd /d/web/zz
+   34  history >>20213600-0906.txt
+   35  history 
+   36  pwd
+   37  cd /
+   38  cd d/
+   39  cd d:/
+   40  mkdir zz
+   41  cd zz
+   42  cp c:/Usere/
+   43  cp C:/Users/19228/Desktop
+   44  cp C:/Users/19228/Desktop qq
+   45  cp C:/Users/19228/zwy/OIC-P.png D:/zz
+   46  cp d:/zz C:/Users/19228/zwy/OIC-P.png
+   47  cp C:/Users/19228/zwy/OIP-C.png D:/zz
+   48  cp C:/Users/19228/zwy/OIP-C.jpg D:/zz
+   49  history 
+   50  ls
+   51  ll
+   52  mv C:/Users/19228/zwy/OIP-C.jpg D:/zz
+   53  ls
+   54  cd c:/Users/19228/zwy
+   55  ls
+   56  cd /d/
+   57  ls
+   58  cd /d/zz
+   59  ls
+   60  mv /d/zz/OIP-C.jpg C:/Users/19228/zwy
+   61  ls
+   62  cd /c/Users/19228/zwy
+   63  ls
+   64  history 
+   65  history >>20213600-0906.txt
+   66  pwd
+   67  cd ../
+   68  pwd
+   69  cd -
+   70  find /19228 -name'z'
+   71  rm /d/zz
+   72  cd /d
+   73  ls
+   74  cd /d/zz
+   75  mkdir ww
+   76  ls
+   77  mkdir yy
+   78  ls
+   79  rm ww
+   80  ls
+   81  rm zz
+   82  ls
+   83  rm -f ww
+   84  history 
+   85  history >>20213600-0906.txt
